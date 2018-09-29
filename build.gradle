@@ -29,12 +29,18 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-task startMockServer {
+task startMockServer() {
     doFirst {
         exec {
             workingDir '.'
             commandLine 'java', '-jar', 'wiremock-standalone-2.19.0.jar', '--port', '8888', '--root-dir', 'src/test/resources'
         }
+    }
+}
+
+task stopMockServer {
+    doLast {
+        startMockServer.processHandle.abort()
     }
 }
 
