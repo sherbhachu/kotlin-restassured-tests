@@ -1,0 +1,46 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.2.51'
+}
+
+group 'com.kotlin.restassured.basics'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile 'io.rest-assured:json-path:3.1.1'
+    compile 'io.rest-assured:xml-path:3.1.1'
+    testCompile 'io.rest-assured:rest-assured:3.1.1'
+    testCompile 'io.rest-assured:json-schema-validator:3.1.1'
+    testCompile 'org.hamcrest:hamcrest-core:1.3'
+    testCompile('junit:junit:4.12'){
+        exclude group: 'org.hamcrest'
+   }
+    testCompile 'com.github.tomakehurst:wiremock:2.19.0'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+task startMockServer {
+    doFirst {
+        exec {
+            workingDir '.'
+            commandLine 'java', '-jar', 'wiremock-standalone-2.19.0.jar', '--port', '8888', '--root-dir', 'src/test/resources'
+        }
+    }
+}
+
+test {
+    reports {
+        junitXml.enabled = false
+        html.enabled = true
+    }
+}
